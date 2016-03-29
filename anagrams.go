@@ -30,25 +30,18 @@ func SortString(s string) string {
     return string(r)
 }
 
-type StrSet struct {
-    elements map[string]bool
-}
+type StrSet map[string]bool
 
-func NewStrSet() StrSet {
-    elements := make(map[string]bool)
-    return StrSet{elements}
-}
-
-func (s *StrSet) Elements() []string {
+func (s StrSet) Elements() []string {
     xs := make([]string, 0)
-    for x := range s.elements {
+    for x := range s {
         xs = append(xs, x)
     }
     return xs
 }
 
-func (s *StrSet) Add(x string) {
-    s.elements[x] = true
+func (s StrSet) Add(x string) {
+    s[x] = true
 }
 
 func StrToKey(s string) string {
@@ -61,7 +54,7 @@ func (dict AnagramDictionary) Add(s string) {
     key := StrToKey(s)
     xs, ok := dict[key]
     if !ok {
-        xs = NewStrSet()
+        xs = StrSet{}
     }
     xs.Add(s)
     dict[key] = xs
@@ -91,11 +84,11 @@ func BuildDictionary(dictPath string) AnagramDictionary {
     var dict = AnagramDictionary{}
     scanner := bufio.NewScanner(file)
     for scanner.Scan() {
-        text := scanner.Text()
-        if strings.HasPrefix(text, "#") {
+        word := scanner.Text()
+        if strings.HasPrefix(word, "#") {
             continue
         }
-        dict.Add(text)
+        dict.Add(word)
     }
     return dict
 }
