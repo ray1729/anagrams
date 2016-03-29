@@ -30,33 +30,19 @@ func SortString(s string) string {
     return string(r)
 }
 
-type StrSet map[string]bool
-
-func (s StrSet) Elements() []string {
-    xs := make([]string, 0)
-    for x := range s {
-        xs = append(xs, x)
-    }
-    return xs
-}
-
-func (s StrSet) Add(x string) {
-    s[x] = true
-}
-
 func StrToKey(s string) string {
     return SortString(strings.ToLower(s))
 }
 
-type AnagramDictionary map[string]StrSet
+type AnagramDictionary map[string]map[string]bool
 
 func (dict AnagramDictionary) Add(s string) {
     key := StrToKey(s)
     xs, ok := dict[key]
     if !ok {
-        xs = StrSet{}
+        xs = make(map[string]bool)
     }
-    xs.Add(s)
+    xs[s] = true
     dict[key] = xs
 }
 
@@ -66,7 +52,13 @@ func (dict AnagramDictionary) Get(s string) []string {
     if !ok {
         return nil
     }
-    return xs.Elements()
+    elements := make([]string, len(xs))
+    i := 0
+    for x := range xs {
+        elements[i] = x
+        i++
+    }
+    return elements
 }
 
 func (dict AnagramDictionary) Has(s string) bool {
